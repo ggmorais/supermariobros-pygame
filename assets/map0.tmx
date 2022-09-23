@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.1" orientation="orthogonal" renderorder="right-down" width="240" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="69">
+ <tileset firstgid="1" source="tileset_gutter.tsx"/>
+ <group id="12" name="Visual">
+  <layer id="1" name="background" width="240" height="13">
+   <data encoding="base64" compression="zlib">
+   eJztw7ENAAAMAiDT/z928YpukNBLqqqqqqqqqqqqqqqq+ngvgAwl
+  </data>
+  </layer>
+  <layer id="10" name="foreground" width="240" height="13">
+   <data encoding="base64" compression="zlib">
+   eJzt1kEKgzAQQFG9QKv1Jo21979ZZ6EQClIcsGL7HszGRXCRT6ZpAAAAAACAjFt79B8AGX20W2IGDcOpLO0WDcMhsrvve7sahu/K7r51u3cN8ycuca+v83Qrd/wR36eY584N9FV744bm1t7dUp2lYdhPdvf91K53mF/zAvwlC4Y=
+  </data>
+  </layer>
+ </group>
+ <group id="13" name="Collidable">
+  <layer id="14" name="ground" width="240" height="13">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+   <data encoding="base64" compression="zlib">
+   eJzt2TEKgDAQRcH1Knv/Q1qLhEWNuIYZ+BBIleJViQAAOsqbd8D39Av/tRUDAAAAjnJwBnrLOPerYZjrjaYyxv1qGOaZ3VNG3a+G4brqb7fzVniD2ZPt72YEaw==
+  </data>
+  </layer>
+  <layer id="16" name="coin" width="240" height="13">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+   <data encoding="base64" compression="zlib">
+   eJztxSEBAAAIA7DXoH9R/ANg2MwSAAAAAAAAAL6YGgAAAACuLNKdADM=
+  </data>
+  </layer>
+  <layer id="17" name="mushroom" width="240" height="13">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+   <data encoding="base64" compression="zlib">
+   eJztxzERAAAIAzH8m6wV1hpgIln+fgYAAAAAAACAT1JNPQAAAABcWt7EA30=
+  </data>
+  </layer>
+  <layer id="2" name="graphics" width="240" height="13" visible="0">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+   <data encoding="base64" compression="zlib">
+   eJzt2U0KwjAQhuExO71Bt7PUtQreU3sT9XiOUKGmSTP4U2J9H/hINU3ExUcoFQEAADXSbjwGkZOlDcO53DyAacU9fHT0bJ8vlmumv6l5ANOKe7goBABqdYgCAAC+K2QC/IKmG0PiuzFLezBeJR6ONXM9tsa7N4DPWFu/NlHHVIb91cIa7959r5yV9/uaaATmyHP+xR1TyfdXM2u8ewN4trV+7Cz7RE88/enfo1Lurzr39f4+8A9K73Zrzhz+AyHv5AaK3hXH
+  </data>
+  </layer>
+ </group>
+</map>
