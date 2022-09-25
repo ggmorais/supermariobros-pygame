@@ -19,6 +19,7 @@ class Body:
         self.acceleration = pg.math.Vector2(0, self.gravity)
 
         self.use_constant_velocity = False
+        self.use_constant_velocity_vertical = False
 
     def update(self, dt: float):
         self.horizontal_movement(dt)
@@ -37,11 +38,14 @@ class Body:
         self.check_collisions_x()
 
     def vertical_movement(self, dt: float):
-        self.velocity.y += self.acceleration.y * dt
+        if self.use_constant_velocity_vertical:
+            self.velocity.y = self.acceleration.y
+        else:
+            self.velocity.y += self.acceleration.y * dt
         
         if self.velocity.y > 7:
             self.velocity.y = 7
-        
+
         self.position.y += self.velocity.y * dt + (self.acceleration.y * .5) * (dt * dt)
         self.rect.bottom = self.position.y
 
@@ -52,12 +56,15 @@ class Body:
         if abs(self.velocity.x) < .01:
             self.velocity.x = 0
 
-    def get_hits(self, tiles) -> list:
+    def get_hits(self) -> list:
         # keep only the closest tiles
         tiles = [
-            i for i in tiles 
-            if math.hypot(self.rect.x - i.rect.x, self.rect.y - i.rect.y) < 80
+            i for i in self.collidables
+            if math.hypot(self.rect.x - self.rect.w / 2 - i.rect.x, self.rect.y - i.rect.y) < 80
         ]
+
+        # sort the tiles so the collision checks first the closest tile and not the first in list
+        tiles = sorted(self.collidables, key=lambda x: math.hypot(self.rect.x - x.rect.x, self.rect.y - x.rect.y))
 
         for tile in tiles:
             if self.rect.colliderect(tile):
@@ -66,7 +73,7 @@ class Body:
     def check_collisions_x(self):
         self.left_collision, self.right_collision = None, None
 
-        for tile in self.get_hits(self.collidables):
+        for tile in self.get_hits():
             if self.velocity.x > 0:
                 self.position.x = tile.rect.left - self.rect.w
                 self.rect.x = self.position.x
@@ -81,7 +88,7 @@ class Body:
         self.on_ground = False
         self.rect.bottom += 1
 
-        for tile in self.get_hits(self.collidables):
+        for tile in self.get_hits():
             if self.velocity.y > 0:
                 self.on_ground = True
                 self.is_jumping = False

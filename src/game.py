@@ -6,7 +6,9 @@ from src.tilemap import Tilemap
 from src.constants import WINDOW_SIZE, FPS, SCALE
 from src.sprites.mario import Mario
 from src.sprites.spritesheet import Spritesheet
-from src.sprites.mushroom import Mushroom
+from src.sprites.collectables import Mushroom
+from src.sprites.enemies import Goomba
+from src.sprites.fireball import Fireball
 from src.tileset import Tileset
 from src.hud import Hud
 
@@ -29,16 +31,18 @@ class Game:
 
         self.gutter_tileset = Tileset("assets/tileset_gutter.png", size=(16, 16))
         self.tilemap = Tilemap(self, "assets/map0.tmx")
+        self.fireballs: list[Fireball] = []
+
+        self.enemies = [
+            Goomba(self, 350, 300, self.entities_spritesheet, self.tilemap.get_collidables())
+        ]
 
         self.mario = Mario(
+            self,
             x=300, 
             y=300, 
-            spritesheet=self.entities_spritesheet, 
-            collidables=self.tilemap.get_collidables(),
-            collectables=self.collectables
+            spritesheet=self.entities_spritesheet
         )
-        self.mario.key_pressed = self.key_pressed
-
 
         self.camera = Camera(self.mario, self.tilemap.tmx.width * self.tilemap.tmx.tilewidth * SCALE)
         self.camera_border = Border(self.camera, self.mario)
@@ -62,14 +66,20 @@ class Game:
                 self.key_pressed.add("right")
             elif event.key == pg.K_LEFT:
                 self.key_pressed.add("left")
+            if event.key == pg.K_DOWN:
+                self.key_pressed.add("down")
             if event.key == pg.K_UP:
                 self.mario.jump()
+            if event.key == pg.K_SPACE:
+                self.mario.fireball()
 
         if event.type == pg.KEYUP:
             if event.key == pg.K_RIGHT:
                 self.key_pressed.remove("right")
             elif event.key == pg.K_LEFT:
                 self.key_pressed.remove("left")
+            if event.key == pg.K_DOWN:
+                self.key_pressed.remove("down")
             if event.key == pg.K_UP:
                 if self.mario.body.is_jumping:
                     self.mario.body.velocity.y *= .25
@@ -85,8 +95,14 @@ class Game:
         self.tilemap.draw(self.canvas, self.camera.offset)
         self.mario.draw(self.canvas, self.camera.offset)
         
+        for enemy in self.enemies:
+            enemy.draw(self.canvas, self.camera.offset)
+        
         for item in self.collectables:
             item.draw(self.canvas, self.camera.offset)
+
+        for fireball in self.fireballs:
+            fireball.draw(self.canvas, self.camera.offset)
 
         self.hud.draw(self.canvas)
      
@@ -103,11 +119,21 @@ class Game:
 
         self.poll_events()
         self.mario.update(dt)
+
+        for enemy in self.enemies:
+            enemy.update(dt)
         
         for item in self.collectables:
             item.update(dt)
 
+        for fireball in self.fireballs:
+            fireball.update(dt)
+
+        self.tilemap.update(dt)
+
         self.camera.scroll()
         self.hud.update(dt)
 
-        print(f"FPS: {self.clock.get_fps()}")
+        print(len(self.fireballs))
+
+        # print(f"FPS: {self.clock.get_fps()}")

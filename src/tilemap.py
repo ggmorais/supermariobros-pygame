@@ -2,7 +2,7 @@ import pygame as pg
 import pytmx
 
 from typing import TYPE_CHECKING
-from src.sprites.tile import CoinTile, Tile, MushroomTile
+from src.sprites.tile import Tile, CoinBrickTile, MushroomBrickTile
 from src.constants import SCALE
 
 if TYPE_CHECKING:
@@ -10,8 +10,8 @@ if TYPE_CHECKING:
 
 
 tiles_classes = {
-    "mushroom": MushroomTile,
-    "coin": CoinTile
+    "mushroom": MushroomBrickTile,
+    "coin": CoinBrickTile
 }
 
 
@@ -27,7 +27,7 @@ class Tilemap:
         return [tile for tile in self.tiles if tile.is_collidable]
 
     def generate_tile_objects(self):
-        for layer in self.tmx.visible_layers:
+        for idx, layer in enumerate(self.tmx.visible_layers):
             if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, gid in layer:
                     tile_surface = self.tmx.get_tile_image_by_gid(gid)
@@ -39,9 +39,14 @@ class Tilemap:
                             y=y * self.tmx.tileheight * SCALE, 
                             image=tile_surface,
                             name=layer.name,
-                            is_collidable=layer.properties.get("collidable", False)
+                            is_collidable=layer.properties.get("collidable", False),
+                            zorder=idx
                         ))
 
     def draw(self, target: pg.Surface, offset: pg.math.Vector2):
-        for tile in self.tiles:
+        for tile in sorted(self.tiles, key=lambda x: x.zorder):
             tile.draw(target, offset)
+
+    def update(self, dt: float):
+        for tile in self.tiles:
+            tile.update(dt)

@@ -27,7 +27,7 @@
     <property name="collidable" type="bool" value="true"/>
    </properties>
    <data encoding="base64" compression="zlib">
-   eJztxSEBAAAIA7DXoH9R/ANg2MwSAAAAAAAAAL6YGgAAAACuLNKdADM=
+   eJztyDENAAAMw7DSGH+iI9Bz3+wnUhIAAAAAAAAAvpjS9gAAAADg2gIOQQCX
   </data>
   </layer>
   <layer id="17" name="mushroom" width="240" height="13">
@@ -35,7 +35,7 @@
     <property name="collidable" type="bool" value="true"/>
    </properties>
    <data encoding="base64" compression="zlib">
-   eJztxzERAAAIAzH8m6wV1hpgIln+fgYAAAAAAACAT1JNPQAAAABcWt7EA30=
+   eJztyLEJAAAIBLHff0lXsRfs7Eyag0sAAAAAAAAA+KRGtwcAAAAAlxrNWAN9
   </data>
   </layer>
   <layer id="2" name="graphics" width="240" height="13" visible="0">

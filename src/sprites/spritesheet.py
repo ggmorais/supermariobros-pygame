@@ -7,7 +7,7 @@ from src.constants import SCALE
 class Spritesheet:
     def __init__(self, filename: str):
         self.filename = filename
-        self.spritesheet = pg.image.load(filename).convert()
+        self.spritesheet = pg.image.load(filename).convert_alpha()
         
         with open(filename.replace(".png", ".json"), "r") as f:
             self.metadata = json.load(f)
@@ -15,8 +15,7 @@ class Spritesheet:
     def get_sprite(self, x: int, y: int, w: int, h: int):
         """ Return a single Surface from cordenates of the image. """
 
-        sprite = pg.Surface((w, h))
-        sprite.set_colorkey((0, 0, 0))
+        sprite = pg.Surface((w, h), pg.SRCALPHA)
         sprite.blit(self.spritesheet, (0, 0), (x, y, w, h))
         rect = sprite.get_rect()
 
@@ -40,7 +39,7 @@ class Spritesheet:
 
         sprites = []
 
-        for i in range(x, w, tile_width):
+        for i in range(x, x + w, tile_width):
             sprite = self.get_sprite(i, y, tile_width, h)
             sprites.append(sprite)
 
