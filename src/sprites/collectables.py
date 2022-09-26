@@ -6,19 +6,19 @@ from src.sprites.spritesheet import Spritesheet
 from src.physics import Body
 
 if typing.TYPE_CHECKING:
-    from src.game import Game
+    from src.screens.play_screen import PlayScreen
     from src.sprites.tile import Tile
 
 
 class Collectable(pg.sprite.Sprite):
-    def __init__(self, game: "Game", x: int, y: int, spritesheet: Spritesheet, collidables: list["Tile"] = None):
+    def __init__(self, play_screen: "PlayScreen", x: int, y: int, spritesheet: Spritesheet):
         super().__init__()
-        self.game = game
+
+        self.play_screen = play_screen
         self.spritesheet = spritesheet
-        self.collidables = collidables
         self.rect = pg.rect.Rect(x, y, 0, 0)
 
-        self.body = Body(self.rect, self.collidables)
+        self.body = Body(self.rect, self.play_screen.tilemap.get_collidables())
 
         self.define_collectable()
 

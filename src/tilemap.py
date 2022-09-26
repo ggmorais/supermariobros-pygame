@@ -6,7 +6,7 @@ from src.sprites.tile import Tile, CoinBrickTile, MushroomBrickTile
 from src.constants import SCALE
 
 if TYPE_CHECKING:
-    from src.game import Game 
+    from src.screens.play_screen import PlayScreen
 
 
 tiles_classes = {
@@ -16,8 +16,8 @@ tiles_classes = {
 
 
 class Tilemap:
-    def __init__(self, game: "Game", tmx_file: str):
-        self.game = game
+    def __init__(self, play_screen: "PlayScreen", tmx_file: str):
+        self.play_screen = play_screen
         self.tmx = pytmx.load_pygame(tmx_file)
         self.tiles: list[Tile] = []
 
@@ -34,7 +34,7 @@ class Tilemap:
                     if tile_surface:
                         tile_class = tiles_classes.get(layer.name, Tile)
                         self.tiles.append(tile_class(
-                            self.game,
+                            self.play_screen,
                             x=x * self.tmx.tilewidth * SCALE, 
                             y=y * self.tmx.tileheight * SCALE, 
                             image=tile_surface,

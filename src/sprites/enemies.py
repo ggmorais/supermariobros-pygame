@@ -6,14 +6,14 @@ from src.physics import Body
 from src.animation import Animation
 
 if typing.TYPE_CHECKING:
-    from src.game import Game
+    from src.screens.play_screen import PlayScreen
 
 
 class Enemy(pg.sprite.Sprite):
-    def __init__(self, game: "Game", x: int, y: int, spritesheet: Spritesheet, collidables: list = None):
+    def __init__(self, play_screen: "PlayScreen", x: int, y: int, spritesheet: Spritesheet, collidables: list = None):
         super().__init__()
 
-        self.game = game
+        self.play_screen = play_screen
         self.rect = pg.rect.Rect(x, y, 0, 0)
         self.spritesheet = spritesheet
         self.collidables = collidables
@@ -69,7 +69,7 @@ class Goomba(Enemy):
 
             # if diff greater than 1s
             if time_diff >= 1000:
-                self.game.enemies.remove(self)
+                self.play_screen.enemies.remove(self)
 
     def prepare_to_die(self):
         self.is_dead = True

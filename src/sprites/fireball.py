@@ -26,7 +26,7 @@ class Fireball(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-        self.body = Body(self.rect, self.mario.game.tilemap.get_collidables())
+        self.body = Body(self.rect, self.mario.play_screen.tilemap.get_collidables())
         self.body.friction = 0
         self.body.acceleration.x = 5 if right_side else -5
         self.body.acceleration.y = 3
@@ -45,10 +45,10 @@ class Fireball(pg.sprite.Sprite):
         self.body.update(dt)
 
         if math.hypot(self.rect.x - self.mario.rect.x, self.rect.y - self.mario.rect.y) > WINDOW_SIZE[0] / 2 + self.mario.rect.w:
-            self.mario.game.fireballs.remove(self)
+            self.mario.play_screen.fireballs.remove(self)
 
         if self.quicks == 4 or self.body.right_collision or self.body.left_collision:
-            self.mario.game.fireballs.remove(self)
+            self.mario.play_screen.fireballs.remove(self)
 
         if self.body.on_ground:
             self.body.acceleration.y = -self.body.acceleration.y
@@ -61,7 +61,7 @@ class Fireball(pg.sprite.Sprite):
         self.check_enemies()
 
     def check_enemies(self):
-        enemy = pg.sprite.spritecollideany(self, self.mario.game.enemies)
+        enemy = pg.sprite.spritecollideany(self, self.mario.play_screen.enemies)
         if enemy and not enemy.is_dead:
             enemy.prepare_to_die()
-            self.mario.game.fireballs.remove(self)
+            self.mario.play_screen.fireballs.remove(self)

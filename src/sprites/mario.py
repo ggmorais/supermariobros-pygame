@@ -10,12 +10,12 @@ from src.animation import Animation
 from src.physics import Body
 
 if typing.TYPE_CHECKING:
-    from src.game import Game
+    from src.screens.play_screen import PlayScreen
 
 
 class Mario(pg.sprite.Sprite):
-    def __init__(self, game: "Game", x: int, y: int, spritesheet: Spritesheet):
-        self.game = game
+    def __init__(self, play_screen: "PlayScreen", x: int, y: int, spritesheet: Spritesheet):
+        self.play_screen = play_screen
         self.spritesheet = spritesheet
         self.facing_right = True
         self.rect = None
@@ -23,7 +23,7 @@ class Mario(pg.sprite.Sprite):
 
         self.animation = Animation()
         self.create_mario("little_mario")
-        self.body = Body(self.rect, self.game.tilemap.get_collidables())
+        self.body = Body(self.rect, self.play_screen.tilemap.get_collidables())
 
         self.rect.x = x
         self.rect.y = y
@@ -35,14 +35,14 @@ class Mario(pg.sprite.Sprite):
         )
 
     def update(self, dt: float):
-        if "left" in self.game.key_pressed:
+        if "left" in self.play_screen.key_pressed:
             self.body.acceleration.x = -.4
-        elif "right" in self.game.key_pressed:
+        elif "right" in self.play_screen.key_pressed:
             self.body.acceleration.x = .4
         else:
             self.body.acceleration.x = 0
 
-        if "down" in self.game.key_pressed and self.is_grown and self.body.on_ground:
+        if "down" in self.play_screen.key_pressed and self.is_grown and self.body.on_ground:
             self.animation.run_state("crouch")
             self.body.acceleration.x = 0
         elif abs(self.body.velocity.x) >= .8 and self.body.on_ground:
@@ -64,19 +64,19 @@ class Mario(pg.sprite.Sprite):
             self.body.head_collision.on_head_hit()
 
     def fireball(self):
-        if len(self.game.fireballs) == 2:
+        if len(self.play_screen.fireballs) == 2:
             return
 
         pos_x = self.rect.right if self.facing_right else self.rect.left
 
-        self.game.fireballs.append(Fireball(self, x=pos_x, y=self.rect.y, right_side=self.facing_right))
+        self.play_screen.fireballs.append(Fireball(self, x=pos_x, y=self.rect.y, right_side=self.facing_right))
 
     def check_collectables(self):
-        if pg.sprite.spritecollide(self, self.game.collectables, dokill=True):
+        if pg.sprite.spritecollide(self, self.play_screen.collectables, dokill=True):
             self.grow()
 
     def check_enemies(self):
-        enemy = pg.sprite.spritecollideany(self, self.game.enemies)
+        enemy = pg.sprite.spritecollideany(self, self.play_screen.enemies)
         if enemy and not enemy.is_dead:
             # enemy head collision (do damage)
             if self.body.velocity.y > 0:
