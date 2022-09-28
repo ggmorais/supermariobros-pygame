@@ -3,8 +3,7 @@ import pytmx
 
 from src.constants import WINDOW_SIZE, FPS, SCALE
 from src.screens.screen_manager import ScreenManager
-from src.screens.menu_screen import MenuScreen
-from src.screens.play_screen import PlayScreen
+from src.screens import MenuScreen, PlayScreen
 
 
 class Game:
@@ -17,9 +16,7 @@ class Game:
         self.window = pg.display.set_mode(WINDOW_SIZE, pg.HWSURFACE | pg.DOUBLEBUF | pg.RESIZABLE)
 
         self.screen_manager = ScreenManager()
-        self.screen_manager.add("menu", MenuScreen(self.screen_manager))
-        self.screen_manager.add("play", PlayScreen(self.screen_manager))
-        self.screen_manager.set_current("menu")
+        self.screen_manager.set_current(MenuScreen(self.screen_manager))
 
     def poll_events(self):
         for event in pg.event.get():
@@ -28,7 +25,7 @@ class Game:
             if event.type == pg.VIDEORESIZE:
                 self.window = pg.display.set_mode(event.size, pg.HWSURFACE | pg.DOUBLEBUF | pg.RESIZABLE)
 
-            self.screen_manager.get_current().handle_input(event)
+            self.screen_manager.current_screen.handle_input(event)
 
     def draw(self):
         """ Clear the screen then render all objects. """

@@ -6,18 +6,17 @@ from src.physics import Body
 from src.animation import Animation
 
 if typing.TYPE_CHECKING:
-    from src.screens.play_screen import PlayScreen
+    from src.screens import PlayScreen
 
 
 class Enemy(pg.sprite.Sprite):
-    def __init__(self, play_screen: "PlayScreen", x: int, y: int, spritesheet: Spritesheet, collidables: list = None):
+    def __init__(self, play_screen: "PlayScreen", x: int, y: int, spritesheet: Spritesheet):
         super().__init__()
 
         self.play_screen = play_screen
         self.rect = pg.rect.Rect(x, y, 0, 0)
         self.spritesheet = spritesheet
-        self.collidables = collidables
-        self.body = Body(self.rect, self.collidables)
+        self.body = Body(self.rect, self.play_screen.tilemap.get_collidables())
         self.animation = Animation()
 
         self.define_enemy()
@@ -41,7 +40,7 @@ class Goomba(Enemy):
         
         self.animation.add_state("idle", self.image[:2], 10)
         self.animation.add_state("dead", self.image[2:3], 10)
-        self.animation.run_state("idle")
+        self.animation.play("idle")
         
         self.rect.size = self.animation.get_current_surface().get_size()
 
@@ -54,7 +53,7 @@ class Goomba(Enemy):
         target.blit(self.animation.get_current_surface(), (self.rect.x - offset.x, self.rect.y - offset.y))
 
     def update(self, dt: float):
-        self.animation.animate()
+        self.animation.update()
 
         if not self.is_dead:
             self.body.update(dt)
@@ -74,4 +73,4 @@ class Goomba(Enemy):
     def prepare_to_die(self):
         self.is_dead = True
         self.death_timer = pg.time.get_ticks()
-        self.animation.run_state("dead")
+        self.animation.play("dead")

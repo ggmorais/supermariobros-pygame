@@ -6,7 +6,7 @@ from src.sprites.tile import Tile, CoinBrickTile, MushroomBrickTile
 from src.constants import SCALE
 
 if TYPE_CHECKING:
-    from src.screens.play_screen import PlayScreen
+    from src.screens import PlayScreen
 
 
 tiles_classes = {

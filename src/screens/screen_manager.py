@@ -9,6 +9,7 @@ class Screen:
     def __init__(self, manager: ScreenManager):
         self.manager = manager
         self.canvas = pg.Surface(WINDOW_SIZE)
+        self.rect = self.canvas.get_rect()
 
     def draw(self, target: pg.Surface):
         pass
@@ -20,29 +21,60 @@ class Screen:
         pass
 
 
+class TransitionScreen(Screen):
+    pass
+
+
 class ScreenManager:
     def __init__(self):
-        # self._screens = {
-        #     "menu": MenuScreen(self),
-        #     "play": PlayScreen(self)
+        # self.screens: dict[str, Screen] = {
+        #     "transition": Screen(self)
         # }
-        self._screens: dict[str, Screen] = {}
-        self._current_screen = None
+        self.transition_screen = TransitionScreen(self)
+        self.screens: list[Screen] = [
+            self.transition_screen
+        ]
+        self.current_screen = None
+        self.next_screen = None
 
-    def add(self, name: str, screen: Screen):
-        self._screens[name] = screen
+        self.is_transitioning = False
+        self.next_transparency = 100
 
-    def set_current(self, name: str):
-        self._current_screen = name
+        self.timer = 0
+    
+    def set_current(self, screen: Screen, destroy_previous: bool = True):
+        if type(self.current_screen) is screen:
+            return 
 
-    def get_current(self):
-        return self._screens[self._current_screen]
+        if screen not in self.screens:
+            self.screens.append(screen)
+
+        if destroy_previous and self.current_screen:
+            self.screens.remove(self.current_screen)
+
+        self.next_screen = screen
+        self.current_screen = self.transition_screen
+        self.is_transitioning = True
+
+        self.timer = pg.time.get_ticks()
 
     def draw(self, target: pg.Surface):
-        self.get_current().draw(target)
+        # draw the objects
+        # self.get_current().draw(target)
+        self.current_screen.draw(target)
 
-        # scale the scrren if the window get resized
-        target.blit(pg.transform.scale(self.get_current().canvas, target.get_rect().size), (0, 0))
+        if self.is_transitioning:
+            self.current_screen.canvas.set_alpha(50)
+            self.next_screen.canvas.set_alpha(150)
+
+        target.blit(pg.transform.scale(self.current_screen.canvas, target.get_rect().size), self.current_screen.rect)
 
     def update(self, dt: float):
-        self.get_current().update(dt)
+        if self.is_transitioning and pg.time.get_ticks() - self.timer >= 200:
+            self.next_screen.canvas.set_alpha(255)
+            self.is_transitioning = False
+            self.current_screen = self.next_screen
+            self.timer = 0
+
+        if not self.is_transitioning:
+            self.current_screen.update(dt)

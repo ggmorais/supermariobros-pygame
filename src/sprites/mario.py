@@ -10,7 +10,7 @@ from src.animation import Animation
 from src.physics import Body
 
 if typing.TYPE_CHECKING:
-    from src.screens.play_screen import PlayScreen
+    from src.screens import PlayScreen
 
 
 class Mario(pg.sprite.Sprite):
@@ -28,6 +28,9 @@ class Mario(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+        self.is_dead = False
+        self.deadth_timer = 0
+
     def draw(self, target: pg.Surface, offset: pg.math.Vector2):
         target.blit(
             pg.transform.flip(self.animation.get_current_surface(), not self.facing_right, False),
@@ -35,6 +38,34 @@ class Mario(pg.sprite.Sprite):
         )
 
     def update(self, dt: float):
+        self.handle_input()
+
+        if self.body.velocity.x > 0:
+            self.facing_right = True
+        if self.body.velocity.x < 0:
+            self.facing_right = False
+
+        self.body.update(dt)
+        self.animation.update()
+        self.check_collectables()
+        self.check_enemies()
+
+        if self.body.fall_off_map:
+            self.die()
+
+        if self.body.head_collision:
+            self.body.head_collision.on_head_hit()
+
+        if self.is_dead:
+            # if 1.2s passed since Mario died
+            if pg.time.get_ticks() - self.deadth_timer > 1200:
+                self.play_screen.go_to_menu()
+
+
+    def handle_input(self):
+        if self.is_dead:
+            return
+
         if "left" in self.play_screen.key_pressed:
             self.body.acceleration.x = -.4
         elif "right" in self.play_screen.key_pressed:
@@ -43,25 +74,29 @@ class Mario(pg.sprite.Sprite):
             self.body.acceleration.x = 0
 
         if "down" in self.play_screen.key_pressed and self.is_grown and self.body.on_ground:
-            self.animation.run_state("crouch")
+            self.animation.play("crouch")
             self.body.acceleration.x = 0
         elif abs(self.body.velocity.x) >= .8 and self.body.on_ground:
-            self.animation.run_state("run")
+            self.animation.play("run")
         elif self.body.on_ground:
-            self.animation.run_state("idle")
+            self.animation.play("idle")
 
-        if self.body.velocity.x > 0:
-            self.facing_right = True
-        if self.body.velocity.x < 0:
-            self.facing_right = False
+    def die(self):
+        if self.is_dead:
+            return
 
-        self.body.update(dt)
-        self.animation.animate()
-        self.check_collectables()
-        self.check_enemies()
+        self.deadth_timer = pg.time.get_ticks()
+        self.animation.play("dead")
+        self.body.velocity.y -= 15
+        self.body.on_ground = False
+        self.body.velocity.x = 0
+        self.is_dead = True
+        self.body.collision_enabled = False
 
-        if self.body.head_collision:
-            self.body.head_collision.on_head_hit()
+    def take_damage(self):
+        if not self.is_grown:
+            self.die()
+        self.is_grown = False
 
     def fireball(self):
         if len(self.play_screen.fireballs) == 2:
@@ -84,13 +119,11 @@ class Mario(pg.sprite.Sprite):
 
                 # apply vertical impulse on Mario
                 self.body.velocity.y -= 10
-                self.animation.run_state("jump")
+                self.animation.play("jump")
                 
             # enemy lateral or bottom collision (receive damage)
-            elif self.body.velocity.x != 0 or self.body.velocity.y == 0:
-                pass
-            elif self.body.velocity.y < 0:
-                pass
+            elif self.body.velocity.x != 0 or self.body.velocity.y == 0 or self.body.velocity.y < 0:
+                self.die()
 
 
     def create_mario(self, mario_sprite: str = "little_mario"):
@@ -99,7 +132,8 @@ class Mario(pg.sprite.Sprite):
         self.animation.add_state("run", self.image[1:4], fps=16)
         self.animation.add_state("jump", self.image[5:6])
         self.animation.add_state("crouch", self.image[6:7])
-        self.animation.run_state("idle")
+        self.animation.add_state("dead", self.image[6:7])
+        self.animation.play("idle")
 
         if self.rect:
             self.rect.size = self.animation.get_current_surface().get_size()
@@ -119,4 +153,4 @@ class Mario(pg.sprite.Sprite):
             self.body.is_jumping = True
             self.body.velocity.y -= 10
             self.body.on_ground = False
-            self.animation.run_state("jump")
+            self.animation.play("jump")

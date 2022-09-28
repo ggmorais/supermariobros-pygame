@@ -27,7 +27,7 @@ class Hud:
 
     def draw(self, target: pg.Surface):
         for k, v in self.labels.items():
-            img = self.font.render(str(v["value"]), True, (255, 255, 255))
+            img = self.font.render(str(v["value"]), False, (255, 255, 255))
             target.blit(img, v["pos"])
 
     def update(self, dt: float):

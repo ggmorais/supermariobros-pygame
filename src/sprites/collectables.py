@@ -6,7 +6,7 @@ from src.sprites.spritesheet import Spritesheet
 from src.physics import Body
 
 if typing.TYPE_CHECKING:
-    from src.screens.play_screen import PlayScreen
+    from src.screens import PlayScreen
     from src.sprites.tile import Tile
 
 

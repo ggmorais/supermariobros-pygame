@@ -9,7 +9,7 @@
   </layer>
   <layer id="10" name="foreground" width="240" height="13">
    <data encoding="base64" compression="zlib">
-   eJzt1kEKgzAQQFG9QKv1Jo21979ZZ6EQClIcsGL7HszGRXCRT6ZpAAAAAACAjFt79B8AGX20W2IGDcOpLO0WDcMhsrvve7sahu/K7r51u3cN8ycuca+v83Qrd/wR36eY584N9FV744bm1t7dUp2lYdhPdvf91K53mF/zAvwlC4Y=
+   eJzt1kEKgzAQQFF7hOpNTNX736xxEQhFUAZtS3wPslNxMT9J1wEAAAAAABH949d/AEQ8c7spr0HD3EBLZ1VpN2mYG1jnffyzOY/uJ5/tapiWlXbXGX8dnPMpPzNXazm5jejdt2531DB8XWQ/Ke9tnbup+paG4TrRu+9eu85hWvMGSVUM4g==
   </data>
   </layer>
  </group>
@@ -19,10 +19,10 @@
     <property name="collidable" type="bool" value="true"/>
    </properties>
    <data encoding="base64" compression="zlib">
-   eJzt2TEKgDAQRcH1Knv/Q1qLhEWNuIYZ+BBIleJViQAAOsqbd8D39Av/tRUDAAAAjnJwBnrLOPerYZjrjaYyxv1qGOaZ3VNG3a+G4brqb7fzVniD2ZPt72YEaw==
+   eJzt07EJADAIRUGz/9LZQBIiKOQOXmdh8yMAAAAAAAAAAAAA/rKSTm6qAu5N2e/L5rv/kLrazu4BDQ==
   </data>
   </layer>
-  <layer id="16" name="coin" width="240" height="13">
+  <layer id="16" name="coin" width="240" height="13" visible="0">
    <properties>
     <property name="collidable" type="bool" value="true"/>
    </properties>
@@ -30,20 +30,12 @@
    eJztyDENAAAMw7DSGH+iI9Bz3+wnUhIAAAAAAAAAvpjS9gAAAADg2gIOQQCX
   </data>
   </layer>
-  <layer id="17" name="mushroom" width="240" height="13">
+  <layer id="17" name="mushroom" width="240" height="13" visible="0">
    <properties>
     <property name="collidable" type="bool" value="true"/>
    </properties>
    <data encoding="base64" compression="zlib">
    eJztyLEJAAAIBLHff0lXsRfs7Eyag0sAAAAAAAAA+KRGtwcAAAAAlxrNWAN9
-  </data>
-  </layer>
-  <layer id="2" name="graphics" width="240" height="13" visible="0">
-   <properties>
-    <property name="collidable" type="bool" value="true"/>
-   </properties>
-   <data encoding="base64" compression="zlib">
-   eJzt2U0KwjAQhuExO71Bt7PUtQreU3sT9XiOUKGmSTP4U2J9H/hINU3ExUcoFQEAADXSbjwGkZOlDcO53DyAacU9fHT0bJ8vlmumv6l5ANOKe7goBABqdYgCAAC+K2QC/IKmG0PiuzFLezBeJR6ONXM9tsa7N4DPWFu/NlHHVIb91cIa7959r5yV9/uaaATmyHP+xR1TyfdXM2u8ewN4trV+7Cz7RE88/enfo1Lurzr39f4+8A9K73Zrzhz+AyHv5AaK3hXH
   </data>
   </layer>
  </group>

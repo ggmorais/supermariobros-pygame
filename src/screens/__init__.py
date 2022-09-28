@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-import typing
 import pygame as pg
 
 from src.screens.screen_manager import ScreenManager, Screen
@@ -15,6 +12,38 @@ from src.sprites.enemies import Goomba
 from src.sprites.fireball import Fireball
 from src.tileset import Tileset
 from src.hud import Hud
+
+
+class MenuScreen(Screen):
+    def __init__(self, manager: ScreenManager):
+        super().__init__(manager)
+
+        self.background = pg.image.load("assets/menu_background2.png")
+        self.menu_options = [
+            "START",
+            "SOUND"
+        ]
+        self.selected_option_idx = 0
+
+    def draw(self, target: pg.Surface):
+        self.canvas.fill((0, 0, 0))
+        self.canvas.blit(pg.transform.scale(self.background, WINDOW_SIZE), self.rect)
+
+        for idx, name in enumerate(self.menu_options):
+            color = (255, 200, 200) if idx == self.selected_option_idx else (255, 255, 255)
+            img = pg.font.SysFont("", 22).render(name, False, color)
+            self.canvas.blit(img, (WINDOW_SIZE[0] / 2 - img.get_width() / 2, 180 + 16 * idx))
+
+    def update(self, dt: float):
+        key_pressed = pg.key.get_pressed()
+
+        if key_pressed[pg.K_RETURN]:
+            if self.menu_options[self.selected_option_idx] == "START":
+                self.manager.set_current(PlayScreen(self.manager))
+        if key_pressed[pg.K_DOWN] and self.selected_option_idx < len(self.menu_options) - 1:
+            self.selected_option_idx += 1
+        if key_pressed[pg.K_UP] and self.selected_option_idx > 0:
+            self.selected_option_idx -= 1
 
 
 class PlayScreen(Screen):
@@ -32,7 +61,7 @@ class PlayScreen(Screen):
         self.fireballs: list[Fireball] = []
 
         self.enemies = [
-            Goomba(self, 350, 300, self.entities_spritesheet, self.tilemap.get_collidables())
+            Goomba(self, 350, 300, self.entities_spritesheet)
         ]
 
         self.mario = Mario(
@@ -46,10 +75,14 @@ class PlayScreen(Screen):
         self.camera_border = Border(self.camera, self.mario)
         self.camera.set_method(self.camera_border)
 
+    def go_to_menu(self):
+        self.manager.set_current(MenuScreen(self.manager))
+
     def handle_input(self, event: pg.event.Event):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
-                self.manager.set_current("menu")
+                # self.manager.set_current("menu")
+                self.manager.set_current(MenuScreen(self.manager))
             if event.key == pg.K_RIGHT:
                 self.key_pressed.add("right")
             elif event.key == pg.K_LEFT:

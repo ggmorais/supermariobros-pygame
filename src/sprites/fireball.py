@@ -20,7 +20,7 @@ class Fireball(pg.sprite.Sprite):
         ]
         self.animation = Animation()
         self.animation.add_state("fire", self.images, fps=10)
-        self.animation.run_state("fire")
+        self.animation.play("fire")
 
         self.rect = self.animation.get_current_surface().get_rect()
         self.rect.x = x
@@ -43,6 +43,7 @@ class Fireball(pg.sprite.Sprite):
 
     def update(self, dt: float):
         self.body.update(dt)
+        self.animation.update()
 
         if math.hypot(self.rect.x - self.mario.rect.x, self.rect.y - self.mario.rect.y) > WINDOW_SIZE[0] / 2 + self.mario.rect.w:
             self.mario.play_screen.fireballs.remove(self)

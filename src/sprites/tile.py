@@ -8,7 +8,7 @@ from src.sprites.collectables import Mushroom
 
 
 if typing.TYPE_CHECKING:
-    from src.screens.play_screen import PlayScreen
+    from src.screens import PlayScreen
 
 
 class Tile(pg.sprite.Sprite):

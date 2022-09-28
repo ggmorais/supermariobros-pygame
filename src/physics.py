@@ -1,6 +1,8 @@
 import math
 import pygame as pg
 
+from src.constants import WINDOW_SIZE
+
 
 class Body:
     def __init__(self, rect: pg.Rect, collidables: list = None):
@@ -13,6 +15,8 @@ class Body:
         self.head_collision = None
         self.right_collision = None
         self.left_collision = None
+        self.collision_enabled = True
+        self.fall_off_map = False
 
         self.position = pg.math.Vector2(self.rect.x, self.rect.y)
         self.velocity = pg.math.Vector2(0, 0)
@@ -35,7 +39,8 @@ class Body:
         self.position.x += self.velocity.x * dt + (self.acceleration.x * .5) * (dt * dt)
         self.rect.x = self.position.x
 
-        self.check_collisions_x()
+        if self.collision_enabled:
+            self.check_collisions_x()
 
     def vertical_movement(self, dt: float):
         if self.use_constant_velocity_vertical:
@@ -48,7 +53,8 @@ class Body:
 
         self.position.y += self.velocity.y * dt + (self.acceleration.y * .5) * (dt * dt)
         self.rect.bottom = self.position.y
-
+        
+        # if self.collision_enabled:
         self.check_collisions_y()
 
     def limit_velocity(self, max_vel: float):
@@ -73,6 +79,10 @@ class Body:
     def check_collisions_x(self):
         self.left_collision, self.right_collision = None, None
 
+        if self.position.x <= 0:
+            self.position.x = 0
+            self.rect.x = self.position.x
+
         for tile in self.get_hits():
             if self.velocity.x > 0:
                 self.position.x = tile.rect.left - self.rect.w
@@ -87,6 +97,17 @@ class Body:
         self.head_collision = None
         self.on_ground = False
         self.rect.bottom += 1
+        self.fall_off_map = False
+
+        if self.position.y > WINDOW_SIZE[1] + self.rect.h and self.collision_enabled:
+            self.fall_off_map = True
+
+        if self.fall_off_map:
+            return
+
+        if self.position.y <= 0:
+            self.position.y = 0
+            self.rect.y = self.position.y
 
         for tile in self.get_hits():
             if self.velocity.y > 0:

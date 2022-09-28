@@ -8,7 +8,7 @@ class Animation:
         self.current_frame = 0
         self.timer = 0
 
-    def run_state(self, name: str):
+    def play(self, name: str):
         if self.current_state == name:
             return
         self.current_state = name
@@ -23,7 +23,7 @@ class Animation:
     def get_current_surface(self) -> pg.Surface:
         return self.states[self.current_state]["surfaces"][self.current_frame]
 
-    def animate(self):
+    def update(self):
         state = self.states[self.current_state]
 
         if len(state["surfaces"]) == 1:
