@@ -19,7 +19,7 @@
     <property name="collidable" type="bool" value="true"/>
    </properties>
    <data encoding="base64" compression="zlib">
-   eJzt07EJADAIRUGz/9LZQBIiKOQOXmdh8yMAAAAAAAAAAAAA/rKSTm6qAu5N2e/L5rv/kLrazu4BDQ==
+   eJzt08EJADAIBEHtv+nUEJCcgRnYp+DnqgAAAAAAAAAA2KQf3QDz7Bf+0UsC7qV3O7H59B9SqgMY3QEV
   </data>
   </layer>
   <layer id="16" name="coin" width="240" height="13" visible="0">
@@ -30,7 +30,7 @@
    eJztyDENAAAMw7DSGH+iI9Bz3+wnUhIAAAAAAAAAvpjS9gAAAADg2gIOQQCX
   </data>
   </layer>
-  <layer id="17" name="mushroom" width="240" height="13" visible="0">
+  <layer id="17" name="mushroom" width="240" height="13">
    <properties>
     <property name="collidable" type="bool" value="true"/>
    </properties>

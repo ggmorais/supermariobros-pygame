@@ -29,7 +29,8 @@ class Mario(pg.sprite.Sprite):
         self.rect.y = y
 
         self.is_dead = False
-        self.deadth_timer = 0
+        self.is_invulnerable = False
+        self.damage_timer = 0
 
     def draw(self, target: pg.Surface, offset: pg.math.Vector2):
         target.blit(
@@ -47,8 +48,12 @@ class Mario(pg.sprite.Sprite):
 
         self.body.update(dt)
         self.animation.update()
-        self.check_collectables()
-        self.check_enemies()
+        
+        if not self.is_dead:
+            self.check_collectables()
+
+            if not self.is_invulnerable:
+                self.check_enemies()
 
         if self.body.fall_off_map:
             self.die()
@@ -58,8 +63,13 @@ class Mario(pg.sprite.Sprite):
 
         if self.is_dead:
             # if 1.2s passed since Mario died
-            if pg.time.get_ticks() - self.deadth_timer > 1200:
+            if pg.time.get_ticks() - self.damage_timer > 1200:
                 self.play_screen.go_to_menu()
+
+        if self.is_invulnerable:
+            if pg.time.get_ticks() - self.damage_timer > 1200:
+                self.is_invulnerable = False
+                self.damage_timer = 0
 
 
     def handle_input(self):
@@ -85,17 +95,23 @@ class Mario(pg.sprite.Sprite):
         if self.is_dead:
             return
 
-        self.deadth_timer = pg.time.get_ticks()
         self.animation.play("dead")
-        self.body.velocity.y -= 15
+        self.body.velocity.y -= 7
         self.body.on_ground = False
         self.body.velocity.x = 0
         self.is_dead = True
         self.body.collision_enabled = False
 
     def take_damage(self):
+        if self.is_invulnerable:
+            return
+
         if not self.is_grown:
+            self.create_mario("little_mario")
             self.die()
+
+        self.damage_timer = pg.time.get_ticks()
+        self.is_invulnerable = True
         self.is_grown = False
 
     def fireball(self):
@@ -123,7 +139,7 @@ class Mario(pg.sprite.Sprite):
                 
             # enemy lateral or bottom collision (receive damage)
             elif self.body.velocity.x != 0 or self.body.velocity.y == 0 or self.body.velocity.y < 0:
-                self.die()
+                self.take_damage()
 
 
     def create_mario(self, mario_sprite: str = "little_mario"):
@@ -137,7 +153,9 @@ class Mario(pg.sprite.Sprite):
 
         if self.rect:
             self.rect.size = self.animation.get_current_surface().get_size()
-            self.rect.y -= self.rect.h / 2
+
+            if self.is_grown:
+                self.rect.y -= self.rect.h / 2
         else:
             self.rect = self.animation.get_current_surface().get_rect()
 

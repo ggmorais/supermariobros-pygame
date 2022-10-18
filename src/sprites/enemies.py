@@ -45,7 +45,8 @@ class Goomba(Enemy):
         self.rect.size = self.animation.get_current_surface().get_size()
 
         self.body.use_constant_velocity = True
-        self.body.acceleration.x = 2
+        self.speedx = 2
+        self.body.acceleration.x = self.speedx
         self.is_dead = False
         self.death_timer = 0
 
@@ -55,13 +56,20 @@ class Goomba(Enemy):
     def update(self, dt: float):
         self.animation.update()
 
+        if not self.body.on_ground:
+            self.body.acceleration.x = 0
+        else:
+            self.body.acceleration.x = self.speedx
+
         if not self.is_dead:
             self.body.update(dt)
         
         if self.body.right_collision:
-            self.body.acceleration.x = -abs(self.body.acceleration.x)
+            # self.body.acceleration.x = -abs(self.body.acceleration.x)
+            self.speedx = -abs(self.speedx)
         elif self.body.left_collision:
-            self.body.acceleration.x = abs(self.body.acceleration.x)
+            # self.body.acceleration.x = abs(self.body.acceleration.x)
+            self.speedx = abs(self.speedx)
 
         if self.is_dead:
             time_diff = pg.time.get_ticks() - self.death_timer

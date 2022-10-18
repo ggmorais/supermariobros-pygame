@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import typing
 import pygame as pg
 
 from src.constants import WINDOW_SIZE
+
+if typing.TYPE_CHECKING:
+    from src.game import Game
 
 
 class Screen:
@@ -26,10 +30,8 @@ class TransitionScreen(Screen):
 
 
 class ScreenManager:
-    def __init__(self):
-        # self.screens: dict[str, Screen] = {
-        #     "transition": Screen(self)
-        # }
+    def __init__(self, game: Game):
+        self.game = game
         self.transition_screen = TransitionScreen(self)
         self.screens: list[Screen] = [
             self.transition_screen
@@ -60,7 +62,6 @@ class ScreenManager:
 
     def draw(self, target: pg.Surface):
         # draw the objects
-        # self.get_current().draw(target)
         self.current_screen.draw(target)
 
         if self.is_transitioning:

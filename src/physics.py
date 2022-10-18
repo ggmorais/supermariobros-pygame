@@ -54,8 +54,8 @@ class Body:
         self.position.y += self.velocity.y * dt + (self.acceleration.y * .5) * (dt * dt)
         self.rect.bottom = self.position.y
         
-        # if self.collision_enabled:
-        self.check_collisions_y()
+        if self.collision_enabled:
+            self.check_collisions_y()
 
     def limit_velocity(self, max_vel: float):
         self.velocity.x = max(-max_vel, min(self.velocity.x, max_vel))

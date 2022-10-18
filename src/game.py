@@ -15,7 +15,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.window = pg.display.set_mode(WINDOW_SIZE, pg.HWSURFACE | pg.DOUBLEBUF | pg.RESIZABLE)
 
-        self.screen_manager = ScreenManager()
+        self.screen_manager = ScreenManager(self)
         self.screen_manager.set_current(MenuScreen(self.screen_manager))
 
     def poll_events(self):

@@ -21,9 +21,11 @@ class MenuScreen(Screen):
         self.background = pg.image.load("assets/menu_background2.png")
         self.menu_options = [
             "START",
-            "SOUND"
+            "SOUND",
+            "EXIT"
         ]
         self.selected_option_idx = 0
+        self.key_pressed_timer = 0
 
     def draw(self, target: pg.Surface):
         self.canvas.fill((0, 0, 0))
@@ -35,14 +37,27 @@ class MenuScreen(Screen):
             self.canvas.blit(img, (WINDOW_SIZE[0] / 2 - img.get_width() / 2, 180 + 16 * idx))
 
     def update(self, dt: float):
+        print(self.key_pressed_timer)
+        time_now = pg.time.get_ticks()
+        if self.key_pressed_timer > 0:
+            if time_now - self.key_pressed_timer > 200:
+                self.key_pressed_timer = 0
+            else:
+                return
+
         key_pressed = pg.key.get_pressed()
+
+        if any(key_pressed):
+            self.key_pressed_timer = pg.time.get_ticks()
 
         if key_pressed[pg.K_RETURN]:
             if self.menu_options[self.selected_option_idx] == "START":
                 self.manager.set_current(PlayScreen(self.manager))
-        if key_pressed[pg.K_DOWN] and self.selected_option_idx < len(self.menu_options) - 1:
+            if self.menu_options[self.selected_option_idx] == "EXIT":
+                self.manager.game.is_running = False
+        elif key_pressed[pg.K_DOWN] and self.selected_option_idx < len(self.menu_options) - 1:
             self.selected_option_idx += 1
-        if key_pressed[pg.K_UP] and self.selected_option_idx > 0:
+        elif key_pressed[pg.K_UP] and self.selected_option_idx > 0:
             self.selected_option_idx -= 1
 
 
@@ -61,7 +76,7 @@ class PlayScreen(Screen):
         self.fireballs: list[Fireball] = []
 
         self.enemies = [
-            Goomba(self, 350, 300, self.entities_spritesheet)
+            Goomba(self, 100, 16, self.entities_spritesheet)
         ]
 
         self.mario = Mario(
